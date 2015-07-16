@@ -340,6 +340,15 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+
+    var results = {};
+
+    return function() {
+      if (!results.hasOwnProperty(arguments[0])) {
+        results[arguments[0]] = func.apply(this, arguments);
+      }
+      return results[arguments[0]];
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -349,6 +358,14 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+ //   var argList = [].slice.call(arguments, 2);  // This mimics the solution in the underscore library and functions in place of the for loop below.
+    var argList = [];
+    for (var i = 2; i < arguments.length; i++) {
+      argList.push(arguments[i]);
+    }
+    return setTimeout(function () {
+      return func.apply(null, argList);
+    }, wait);
   };
 
 
@@ -363,6 +380,22 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var lookupArray = [];
+    var returnedArray = [];
+
+    for (var i = 0; i < array.length; i++) {
+        lookupArray.push([array[i], Math.random()]);
+    }
+
+    lookupArray.sort(function(a, b) {
+      return a[1] - b[1];
+    });
+
+    for (var j = 0; j < lookupArray.length; j++) {
+        returnedArray.push(lookupArray[j][0]);
+    }
+
+    return returnedArray;
   };
 
 
